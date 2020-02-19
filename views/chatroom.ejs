@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title> <%= title %> </title>
+    <style>
+      form { background: #000; padding: 5px; position: fixed; bottom: 0; width: 100%; }
+      form input { border: 0; padding: 10px; width: 100%; margin-right: .5%; }
+     #messages { list-style-type: none; margin: 0; padding: 0; }
+    </style>
+    
+  </head>
+  
+  <body>
+    <h1><%= title %></h1>
+    <ul id="messages"></ul>
+    <form action="" post = "/chatArea">
+        <input id="msg" autocomplete="off" />
+        <input type = "submit" value="Message">
+</form>
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+<script>
+   $(function () {
+        var socket = io();
+        $('form').submit(function(){
+        socket.emit('join', {id: '<%= id %>'})
+
+        socket.emit('chat message', ('<%=userID %>: ' + $('#msg').val()));
+        socket.emit('username', '<%=userID %>');
+
+        $('#msg').val('');
+        
+        return false;
+        });
+        socket.on('chat message', function(msg){
+      $('#messages').append($('<li>').text(msg));
+    });
+})
+</script>
+  </body>
+</html>
