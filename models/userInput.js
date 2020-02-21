@@ -1,13 +1,18 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const crypto = require('crypto');
 
 var loginSchema = new Schema({
-    username: String,
-    password: String,
+    username: {
+        type: String,
+        required: true
+    },
     published_date:{
         type:Date,
         default:Date.now
-    }
+    },
+    hash: String,
+    salt: String
 })
 
 var chatrooms = new Schema({
@@ -27,8 +32,21 @@ var messages = new Schema({
     }
 })
 
+loginSchema.methods.setPassword = function(password){
+    console.log("This is working");
+    this.salt = crypto.randomBytes(16).toString('hex'); 
+
+    this.hash = crypto.pbkdf2Sync(password, this.salt,  
+    1000, 64, `sha512`).toString(`hex`); 
+}
+
+loginSchema.methods.validPassword = function(password) { 
+    var hash = crypto.pbkdf2Sync(password,  
+    this.salt, 1000, 64, `sha512`).toString(`hex`); 
+    return this.hash === hash; 
+}
 const LoginCollection = mongoose.model('loginSchema',loginSchema);
 const ChatroomCollection = mongoose.model('chatrooms',chatrooms);
 const messagesCollection = mongoose.model('messages', messages);
-module.exports = {LoginCollection,ChatroomCollection,messagesCollection};
+const User = module.exports = {LoginCollection,ChatroomCollection,messagesCollection};
 
