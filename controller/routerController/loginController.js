@@ -1,10 +1,9 @@
-const user = require('../models/userInput');
+const user = require('../../models/userInput');
+const loginLogic = require('../../controller/loginController/login');
 /*
         Will attempt to log the client into the program. Compares username and password based on whats in the database.
         TODO:
             1) Handle error better using express.
-            2) Limit username length 3-12 characters of only ASCII.
-            3) Create mandatory password length.
         */
 exports.loginUser = (req,res,next) => {
     user.LoginCollection.findOne({username: req.body.username}, //Attempts to find the username.
@@ -41,18 +40,47 @@ exports.loginUser = (req,res,next) => {
         and hashed in MongoDB.
     */
 exports.loginCreate = (req,res,next) => {
-    let Login = new user.LoginCollection();
-    Login.username = req.body.username;
-    Login.setPassword(req.body.password);
-    Login.save(function(err)
+    let username = req.body.username;
+    let usernameCheck = loginLogic.checkUserValid(username);
+    console.log(usernameCheck);
+    if(usernameCheck === 2)
     {
-        if(err)
+        return res.status(400).send(
+            {
+                message: "You've entered a character not allowed, please try again."
+            });
+    }
+    else if(usernameCheck === 1)
+    {
+        return res.status(400).send(
+            {
+                message: "You're username must be between 4-16 characters in length"
+            }
+        );
+    }
+    else if(!loginLogic.checkPassValid(req.body.password))
+    {
+        return res.status(400).send(
+            {
+                message: "You're password must be longer than 8 characters"
+            }
+        );
+    }
+    else
+    {
+        let Login = new user.LoginCollection();
+        Login.username = username;
+        Login.setPassword(req.body.password);
+        Login.save(function(err)
         {
-            next(err)
-        } 
-            else
-        {
-            res.redirect('/')
-        }
-    });
+            if(err)
+            {
+                next(err)
+            } 
+                else
+            {
+                res.redirect('/')
+            }
+        });
+    }
 }

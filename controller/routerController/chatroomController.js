@@ -1,4 +1,4 @@
-const user = require('../models/userInput');
+const user = require('../../models/userInput');
 
 /*
         This will create a new chatroom and store its name in the database.
