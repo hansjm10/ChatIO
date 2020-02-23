@@ -2,24 +2,25 @@
     This file serves to routes the client throughout the webpage. It imports MongoDB collections which
     will be compared or displayed to the client.
     Goals: 
-        1) Move logic to a controller file and import it in.
-        2) Require password length and put constraints on username.
-        3) Allow sessions to expire and add a logout button.
+        1) Require password length and put constraints on username.
+        2) Allow sessions to expire and add a logout button.
     Longterm Goal:
         1)Email verification
 
-        Last updated: 2/20/2020
+        Last updated: 2/22/2020
 
 
         ChangeLog:
         2/19/2020 - Commented throughout the file.
         2/20/2020 - Removed any unnecessary redirects.
                     Passwords are now securely stored in MongoDB through a hashing function.
+        2/21/2020 - Moved many long express functions to dedicated controllers.
+        2/22/2020 - Added two functions to standardize username lengths and add a mandatory password length.
             
 */
 const user = require('../models/userInput');
-const loginController = require('../controller/loginController');
-const chatroomController = require('../controller/chatroomController');
+const loginController = require('../controller/routerController/loginController')
+const chatroomController = require('../controller/routerController/chatroomController');
 
 module.exports = (app) => {
    // var userID; //userID used throughout router. Saves the userID so future pages are able to display it. <-- Possible to get this from Session info.
