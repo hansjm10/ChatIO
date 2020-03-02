@@ -25,13 +25,13 @@ exports.loginUser = (req,res,next) => {
                     auth = true;
                     res.redirect('/chatroom');
                 }
-        else 
-            {
-            return res.status(400).send(//If the password is incorrect, will throw an incorrect password error.
-                { 
-                    message: "Incorrect Password"
-                });
-            }
+            else 
+                {
+                return res.status(400).send(//If the password is incorrect, will throw an incorrect password error.
+                    { 
+                        message: "Incorrect Password"
+                    });
+                }
         }
     });
 }
