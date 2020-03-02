@@ -7,7 +7,6 @@
         ChangeLog:
         2/22/2020 - Started cleaning the file up, moved all variables to the start of the file. Fixed indentation
         and readability issues.
-        3/2/2020 - Moved all logic regarding socketIO to chatroom.js
 */
 const express = require('express');
 const app = express();
@@ -19,8 +18,8 @@ const FileStore = require('session-file-store')(session)
 const connectDB = require('./models/connectMongoDB');
 var io = require('socket.io').listen(server);
 const port = 3000;
-const chatroomSockets = require("./controller/chatroomController/chatroom")
-const router = require('./router/router')(app);
+var room;
+const {messagesCollection} =  require('./models/userInput');
 
 connectDB();
 
@@ -33,13 +32,22 @@ app.use(session(
     }));
 //Middleware
 app.use(bodyParser.json());
+
 app.use(bodyParser.urlencoded(
     {
         extended:true
     }));
+
+const router = require('./router/router')(app);
+
+
+
 app.use(express.static('public'));//default path
+
 app.set('views', __dirname + '/views');
+
 app.set('view engine', 'ejs');
+
 app.engine('html',ejs.renderFile); // rendering url;
 
 /*
@@ -47,11 +55,32 @@ Socket.IO allows for the client and server to ping messages between each other u
 The server is constantly listening for commands as well as the client.
 */
 
-io.on('connection', function(socket)
-{
-    chatroomSockets.chatRoomJoin(socket);
-    chatroomSockets.sendChat(socket,io);
-    chatroomSockets.saveMessage(socket);
+io.on('connection', function(socket){
+    let sentMessage;
+    socket.on('join', function(data)
+    {
+        room = data;
+        socket.join(data.id); //User will join the room.    
+    });
+    socket.on('chat message', function(msg)
+    {
+        sentMessage = msg;
+        io.to(room.id).emit('chat message', msg); //The message emits to all users which are in the room.
+    });
+    socket.on('username', function(user)
+    {
+        let messageCollect = new messagesCollection( //Collection will update with all messages that get sent with the username.
+        { 
+            message: sentMessage,
+            username: user
+        });
+        messageCollect.save(function(err){
+            if(err)
+            {
+                console.log("Not Saved");
+            }
+        });
+    });
 });
   
 server.listen(port, () => 

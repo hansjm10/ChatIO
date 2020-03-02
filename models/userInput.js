@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
-//const Schema = mongoose.Schema;
+const Schema = mongoose.Schema;
 const crypto = require('crypto');
 
-var loginSchema = mongoose.Schema({
+var loginSchema = new Schema({
     username: {
         type: String,
         required: true
@@ -15,7 +15,7 @@ var loginSchema = mongoose.Schema({
     salt: String
 })
 
-var chatrooms = mongoose.Schema({
+var chatrooms = new Schema({
     chatroom: String,
     published_date:{
         type:Date,
@@ -23,7 +23,7 @@ var chatrooms = mongoose.Schema({
     }
 })
 
-var messages = mongoose.Schema({
+var messages = new Schema({
     message: String,
     username: String,
     published_date:{
@@ -48,6 +48,6 @@ loginSchema.methods.validPassword = function(password) {
 }
 const LoginCollection = mongoose.model('loginSchema',loginSchema);
 const ChatroomCollection = mongoose.model('chatrooms',chatrooms);
-const MessagesCollection = mongoose.model('messages', messages);
-const User = module.exports = {LoginCollection,ChatroomCollection,MessagesCollection};
+const messagesCollection = mongoose.model('messages', messages);
+const User = module.exports = {LoginCollection,ChatroomCollection,messagesCollection};
 
