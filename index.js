@@ -20,7 +20,6 @@ const connectDB = require('./models/connectMongoDB');
 var io = require('socket.io').listen(server);
 const port = 3000;
 const chatroomSockets = require("./controller/chatroomController/chatroom")
-const router = require('./router/router')(app);
 
 connectDB();
 
@@ -37,10 +36,11 @@ app.use(bodyParser.urlencoded(
     {
         extended:true
     }));
-app.use(express.static('public'));//default path
-app.set('views', __dirname + '/views');
+app.use("/views",express.static(__dirname + "/views"));
 app.set('view engine', 'ejs');
 app.engine('html',ejs.renderFile); // rendering url;
+
+const router = require('./router/router')(app);
 
 /*
 Socket.IO allows for the client and server to ping messages between each other using .on()
@@ -52,6 +52,7 @@ io.on('connection', function(socket)
     chatroomSockets.chatRoomJoin(socket);
     chatroomSockets.sendChat(socket,io);
     chatroomSockets.saveMessage(socket);
+    chatroomSockets.getUsersinChat(socket,io);
 });
   
 server.listen(port, () => 
