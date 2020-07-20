@@ -28,9 +28,10 @@
         $( window ).on( "load", function() {
         console.log( "window loaded" );
         socket.emit('join', {id: '<%= id %>'})
+        socket.emit('joinRoom', {id: '<%= id %>', userID: '<%= userID %>'})
         });
         $('form').submit(function(){
-       // socket.emit('join', {id: '<%= id %>'})
+        socket.emit('join', {id: '<%= id %>'})
 
         socket.emit('chat message', ('<%=userID %>: ' + $('#msg').val()));
         socket.emit('username', '<%=userID %>');

@@ -1,0 +1,39 @@
+.centerMenu{
+    position: fixed;
+    left: 50%;
+    top: 25%;
+    transform: translate(-50%, -50%);
+}
+label {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    text-align: center;
+    width: 400px;
+    line-height: 26px;
+    margin-bottom: 10px;
+  }
+  
+  input {
+    align-content: stretch;
+    height: 20px;
+    flex: 0 0 200px;
+    margin-left: 10px;
+  }
+.loginBox {
+    color: white;
+}
+
+.loginBox h2 {
+    text-align: center;
+}
+.loginBox h4{
+    text-align: center;
+}
+.textAlign{
+    text-align: center;
+}
+
+body{
+    background-color: #7f8688;
+}
