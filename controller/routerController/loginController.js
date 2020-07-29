@@ -54,7 +54,7 @@ exports.loginCreate = (req,res,next) => {
     {
         return res.status(400).send(
             {
-                message: "You're username must be between 4-16 characters in length"
+                message: "Your username must be between 4-16 characters in length"
             }
         );
     }
@@ -62,7 +62,7 @@ exports.loginCreate = (req,res,next) => {
     {
         return res.status(400).send(
             {
-                message: "You're password must be longer than 8 characters"
+                message: "Your password must be longer than 8 characters"
             }
         );
     }
